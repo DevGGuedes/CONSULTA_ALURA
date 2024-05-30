@@ -3,4 +3,7 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
   </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\CONSULTA_ALURA\CONSULTA_ALURA.csproj" />
+  </ItemGroup>
 </Project>

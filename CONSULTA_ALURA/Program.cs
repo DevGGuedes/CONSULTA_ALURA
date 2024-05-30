@@ -13,14 +13,20 @@
 //Classe para consulta de cursos na alura
 
 using System;
+using System.Security.Cryptography.X509Certificates;
 
 namespace CONSULTA_ALURA
 {
     public class Program
     {
-        static void Main(string[] args)
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+        
+        }
+
+        public static void CONSULTA_CURSO()
+        {
+
         }
     }
 }
