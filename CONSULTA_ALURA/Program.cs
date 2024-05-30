@@ -46,7 +46,7 @@ namespace CONSULTA_ALURA
 
             driver.Navigate().GoToUrl(Utilities.GetParameters("urlSiteAlura")); // abrir site da alura, capturando o link do app config
 
-            ret = Utilities.VerificaAcesso(driver, Utilities.GetParameters("urlSiteAlura"), wait);
+            ret = Utilities.VerificaAcesso(driver, Utilities.GetParameters("CaminhoElementoVerificacao"), wait);
             if (ret != 0) return -1; // em caso negativo, finaliza o processo
 
             return 0;
