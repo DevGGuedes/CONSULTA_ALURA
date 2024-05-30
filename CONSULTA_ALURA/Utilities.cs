@@ -52,12 +52,22 @@ namespace CONSULTA_ALURA
             LOG(1, $"Inseriu dados: {valor}");
         }
 
-        //Metodo para clicar nos elementos
+        //Metodo para clicar em elementos
         public static void EnviaClick(IWebDriver driver, By by)
         {
             WaitForElement(driver, by);
 
             driver.FindElement(by).Click();
+        }
+
+        //Metodo para capturar textos
+        public static string Capturatextos(IWebDriver driver, By by)
+        {
+            WaitForElement(driver, by);
+
+            string texto = driver.FindElement(by).Text;
+
+            return texto;
         }
 
         //Encontra elementos na pagina
