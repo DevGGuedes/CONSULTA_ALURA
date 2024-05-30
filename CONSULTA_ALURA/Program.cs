@@ -23,7 +23,7 @@ namespace CONSULTA_ALURA
     {
         public static void Main(string[] args)
         {
-        
+
         }
 
         public static int CONSULTA_PRINC_EXECUTA_AUTOMACAO(string nomeCurso) // metodo principal para realizar consultas
@@ -34,6 +34,7 @@ namespace CONSULTA_ALURA
             if (ret != 0) return -1; // em caso negativo, finaliza o processo
 
             ret = CONSULTA_CURSO(nomeCurso);
+            if (ret != 0) return -1; // em caso negativo, finaliza o processo
 
             return 0;
         }
@@ -61,6 +62,33 @@ namespace CONSULTA_ALURA
 
             //Esperar para a proxima pagina ser carregada com os resultados
             Utilities.WaitForElement(driver, By.Id(Utilities.GetParameters("idCampoBuscaResultados")));
+
+            var resultado = Utilities.FindElemests(driver, By.XPath("/html/body/div[2]/div[2]/section/div/h2"));
+            var textoVisivel = resultado.Displayed; //true para elementos visiveis na pagina / false para elementos escondidos
+
+            if (textoVisivel) // se verdadeiro, validação para curso nao encontrado
+            {
+                driver.Quit();
+                Utilities.LOG(1, $"Curso consultado mas sem resultados da pagina");
+                return -1;
+            }
+            else
+            {
+                Utilities.LOG(1, $"Curso consultado com sucesso!");
+            }
+
+            // Localiza o elemento "section" dos resultados
+            var section = driver.FindElement(By.Id("busca-resultados"));
+
+            // Encontra todos os elementos LI dentro da "section"
+            var listItems = section.FindElements(By.TagName("li"));
+            foreach (var li in listItems) //loop para todos os cursos encontrados na busca
+            {
+                var links = li.FindElements(By.TagName("a")); // captura TAG HTML A dentro de cada LI encontrada no resultado
+                string linkCurso = links[0].GetAttribute("href"); // captura href com o link para abrir dados do curso
+
+                driver.Navigate().GoToUrl(linkCurso);
+            }
 
             driver.Quit();
 
