@@ -135,10 +135,21 @@ namespace CONSULTA_ALURA
 
             // Verificar se existe a lista de instrutores
             string todosInstrutores = string.Empty;
-            var listaInstrutores = Utilities.FindElemests(driver, By.XPath("/html/body/main/section[2]/section[3]/div/ul"));
+            var listaInstrutores1 = Utilities.FindElemests(driver, By.XPath("/html/body/main/section[2]/section[3]/div/ul"));
+            var listaInstrutores2 = Utilities.FindElemests(driver, By.XPath("/html/body/main/section[2]/section[4]/div/ul"));
             
-            if (elementoDescricao != null)
+            if (listaInstrutores1 != null || listaInstrutores2 != null)
             {
+                IWebElement listaInstrutores ;
+                if (listaInstrutores1 != null)
+                {
+                    listaInstrutores = listaInstrutores1;
+                }
+                else
+                {
+                    listaInstrutores = listaInstrutores2;
+                }
+
                 var instrutores = listaInstrutores.FindElements(By.TagName("li"));
                 foreach (var instrutor in instrutores)
                 {

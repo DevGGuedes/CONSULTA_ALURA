@@ -23,7 +23,7 @@ namespace Program
             try
             {
                 //Para rodar no EXE - em caso de local deixar 
-                args = new string[] { "0", "-log" }; //item forçado para testes. Não utilizar em modo comum de execução
+                //args = new string[] { "0", "-log" }; //item forçado para testes. Não utilizar em modo comum de execução
 
                 CHECA_INTEGRIDADE_PASTAS();
 
@@ -70,7 +70,6 @@ namespace Program
             if (args.Length == 0)
             {
                 string arg_msg_standard = Utilities.GetParameters("arg_msg_standard");
-                Console.WriteLine(arg_msg_standard);
                 Utilities.LOG(1, arg_msg_standard);
 
                 Environment.Exit(1);
