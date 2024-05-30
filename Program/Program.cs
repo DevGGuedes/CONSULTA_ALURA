@@ -28,6 +28,8 @@ namespace Program
                 CHECA_INTEGRIDADE_PASTAS();
 
                 string returned_arg = VALIDA_ARGUMENTOS_EXE(args);
+                
+                Utilities.LOG(1, $"Caminho de registro de LOG em: {Utilities.GetParameters("CaminhoLog")}");
 
                 switch (returned_arg)
                 {

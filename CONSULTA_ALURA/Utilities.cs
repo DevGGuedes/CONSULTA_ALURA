@@ -2,6 +2,8 @@
 using System.Configuration;
 using System.Diagnostics.CodeAnalysis;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using CredentialManagement;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -14,39 +16,93 @@ namespace CONSULTA_ALURA
     {
         public static bool FILE_LOG { get; set; } // variavel para controle de escrita de LOG
 
+        //Metodo para abrir o chromedriver e retonando a instancia criada
         public static IWebDriver AbreChrome()
         {
             try
             {
-                var options = new ChromeOptions();
-                options.AddArgument("--start-maximized");
+                var options = new ChromeOptions(); //configurações do chrome
+                options.AddArgument("--start-maximized"); // abrir chrome maximixado
 
-                return new ChromeDriver(options);
+                return new ChromeDriver(options); // retona instancia chrome 
             }
             catch (Exception e)
             {
-                LOG(3000, "Erro ao abrir chrome");
+                LOG(3000, $"Erro ao abrir chrome {e}");
                 return null;
             }
         }
 
+        //Metodo parar enviar valores para os campos
+        public static void EnviaValor(IWebDriver driver, By by, string valor)
+        {
+            WaitForElement(driver, by);
+
+            var input = FindElemests(driver, by);
+
+            if (input.Enabled == false || input.Displayed == false)
+            {
+                LOG(1, "Elemento não Interagivel");
+                var delay = Task.Run(async delegate { await Task.Delay(TimeSpan.FromSeconds(Convert.ToInt32(GetParameters("Wait")))); });
+                delay.Wait();
+            }
+
+            input.Clear();
+            input.SendKeys(valor);
+            LOG(1, $"Inseriu dados: {valor}");
+        }
+
+        //Metodo para clicar nos elementos
+        public static void EnviaClick(IWebDriver driver, By by)
+        {
+            WaitForElement(driver, by);
+
+            driver.FindElement(by).Click();
+        }
+
+        //Encontra elementos na pagina
+        public static IWebElement FindElemests(IWebDriver driver, By by)
+        {
+            var elements = driver.FindElements(by);
+            return (elements.Count >= 1) ? elements.First() : null;
+        }
+
+        //Metodo para esperar elemento ficar acessivel para interações
+        public static void WaitForElement(IWebDriver driver, By by)
+        {
+            //esperar elemento ficar acessivel
+            WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(Convert.ToInt32(GetParameters("Wait"))));
+            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(by));
+        }
+
+        // metodo pára validação apos acessar site desejado + verificação do campo de busca
         public static int VerificaAcesso(IWebDriver driver, string objHtml, WebDriverWait wait)
         {
-            //espera o elemento ficar acessivel para manipular
-            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.XPath(objHtml)));
+            try
+            {
+                //espera o elemento ficar acessivel para manipular
+                wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.Id(objHtml)));
 
-            var textLogin = driver.FindElement(By.XPath(objHtml)).Text;
-            if (textLogin != null)
-            {
-                LOG(1, "Sucesso ao acessar o site");
+                //captura dados do campo
+                var input = driver.FindElement(By.Id(objHtml));
+                if (input != null)
+                {
+                    LOG(1, "Sucesso ao acessar o site");
+                    LOG(1, "campo de busca existe");
+                }
+                else
+                {
+                    LOG(3000, "Não foi possivel capturar o texto apos acessar o site");
+                    return -1;
+                }
+
+                return 0;
             }
-            else
+            catch (Exception e)
             {
-                LOG(3000, "Não foi possivel capturar o texto apos acessar o site");
+                LOG(3000, $"Não foi possivel capturar o texto apos acessar o site {e}");
                 return -1;
             }
-            
-            return 0;
         }
 
         //Metodo para verificasr se Chrome existe na maquina
@@ -66,7 +122,7 @@ namespace CONSULTA_ALURA
                 LOG(3000, "Executavel não Chrome existe");
                 return -1;
             }
-            
+
             return 0;
         }
 
@@ -110,7 +166,7 @@ namespace CONSULTA_ALURA
 
                 if (line.Trim() != "")
                 {
-                    EscreveArquivoLog(line);
+                    EscreveArquivoLog(line); // metodo principal para criação do LOG
                 }
             }
             else
@@ -119,6 +175,7 @@ namespace CONSULTA_ALURA
             }
         }
 
+        // metodo principal para criação do LOG
         private static void EscreveArquivoLog(string line_str)
         {
             var CaminhoLog = GetParameters("CaminhoLog");
