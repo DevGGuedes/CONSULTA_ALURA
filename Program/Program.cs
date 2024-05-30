@@ -33,6 +33,7 @@ namespace Program
                 {
                     case "0":
                         string nomeCurso = VALIDA_ENTRADA_DADOS();
+                        
                         break;
                 }
 
@@ -47,11 +48,13 @@ namespace Program
         {
             string nomeCurso = string.Empty;
 
-            while (string.IsNullOrEmpty(nomeCurso))
+            while (string.IsNullOrEmpty(nomeCurso)) // validação para enquanto o valor recebido for branco
             {
-                Console.WriteLine("\nInforme o nome do Curso desejado: ");
+                Console.Write("\nInforme o nome do Curso desejado: ");
                 nomeCurso = Console.ReadLine();
             }
+            
+            Utilities.LOG(1, $"Nome do curso para consulta: {nomeCurso}");
 
             return nomeCurso;
         }

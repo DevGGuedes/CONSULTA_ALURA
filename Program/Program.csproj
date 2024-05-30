@@ -6,4 +6,7 @@
   <ItemGroup>
     <ProjectReference Include="..\CONSULTA_ALURA\CONSULTA_ALURA.csproj" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CredentialManagement.Standard" Version="1.0.4" />
+  </ItemGroup>
 </Project>
