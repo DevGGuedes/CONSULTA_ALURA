@@ -32,8 +32,8 @@ namespace Program
                 switch (returned_arg)
                 {
                     case "0":
-                        string nomeCurso = VALIDA_ENTRADA_DADOS();
-                        
+                        string nomeCurso = VALIDA_ENTRADA_DADOS(); // metodo para captura e validação do nome do curso
+                        CONSULTA_ALURA.Program.CONSULTA_PRINC_EXECUTA_AUTOMACAO(nomeCurso); // metodo principal para consulta do curso
                         break;
                 }
 

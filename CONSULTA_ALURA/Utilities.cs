@@ -1,13 +1,74 @@
 ﻿using System;
 using System.Configuration;
+using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using CredentialManagement;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Support.UI;
+using SeleniumExtras.WaitHelpers;
 
 namespace CONSULTA_ALURA
 {
     public class Utilities
     {
         public static bool FILE_LOG { get; set; } // variavel para controle de escrita de LOG
+
+        public static IWebDriver AbreChrome()
+        {
+            try
+            {
+                var options = new ChromeOptions();
+                options.AddArgument("--start-maximized");
+
+                return new ChromeDriver(options);
+            }
+            catch (Exception e)
+            {
+                LOG(3000, "Erro ao abrir chrome");
+                return null;
+            }
+        }
+
+        public static int VerificaAcesso(IWebDriver driver, string objHtml, WebDriverWait wait)
+        {
+            //espera o elemento ficar acessivel para manipular
+            wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.XPath(objHtml)));
+
+            var textLogin = driver.FindElement(By.XPath(objHtml)).Text;
+            if (textLogin != null)
+            {
+                LOG(1, "Sucesso ao acessar o site");
+            }
+            else
+            {
+                LOG(3000, "Não foi possivel capturar o texto apos acessar o site");
+                return -1;
+            }
+            
+            return 0;
+        }
+
+        //Metodo para verificasr se Chrome existe na maquina
+        public static int VerificaChrome()
+        {
+            var Caminhoexiste = File.Exists(GetParameters("CaminhoExeChrome"));
+            var CaminhoExeChorme86 = File.Exists(GetParameters("CaminhoExeChrome86"));
+            LOG(4);
+
+            if (Caminhoexiste || CaminhoExeChorme86)
+            {
+                LOG(1, "Executavel Chrome existe");
+            }
+            else
+            {
+                LOG(1, "Executavel Chrome não existe");
+                LOG(3000, "Executavel não Chrome existe");
+                return -1;
+            }
+            
+            return 0;
+        }
 
         //Metodo para escrita de log e console
         public static void LOG(int msg_code, string msg = null, int mode = 0)
