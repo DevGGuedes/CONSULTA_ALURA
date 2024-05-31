@@ -46,7 +46,7 @@ namespace CONSULTA_ALURA
             int ret = 0;
 
             // Abre chrome
-            var driver = Utilities.AbreChrome(); //abre chrome com selenium
+            var driver = Utilities.AbreChrome();
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(Convert.ToInt32(Utilities.GetParameters("Wait")))); // variavel para daley com 30 segundos
 
             // Abrir site da alura, capturando o link do app config
@@ -65,8 +65,8 @@ namespace CONSULTA_ALURA
             // Esperar para a proxima pagina ser carregada com os resultados
             Utilities.WaitForElement(driver, By.Id(Utilities.GetParameters("idCampoBuscaResultados")));
 
-            var resultado = Utilities.FindElemests(driver, By.XPath("/html/body/div[2]/div[2]/section/div/h2"));
-            var textoVisivel = resultado.Displayed; //true para elementos visiveis na pagina / false para elementos escondidos
+            var resultadoConsulta = Utilities.FindElemests(driver, By.XPath(Utilities.GetParameters("CaminhoElementoResultadosBusca")));
+            var textoVisivel = resultadoConsulta.Displayed; //true para elementos visiveis na pagina / false para elementos escondidos
 
             // Se verdadeiro, validação para curso nao encontrado
             if (textoVisivel)
@@ -81,7 +81,7 @@ namespace CONSULTA_ALURA
             }
 
             // Localiza o elemento "section" dos resultados
-            var section = driver.FindElement(By.Id("busca-resultados"));
+            var section = driver.FindElement(By.Id(Utilities.GetParameters("idCampoResultadosPesquisa")));
 
             // Classe criada para estrutura de dados
             DadosCurso dados = new DadosCurso();
@@ -95,12 +95,11 @@ namespace CONSULTA_ALURA
 
             driver.Navigate().GoToUrl(linkCurso); //acessa link curso
 
-            // Busca por todos os elementos no documento
-            var allElements = driver.FindElements(By.XPath("//*"));
-
-            // captura carga horaria do curso
+            // Captura carga horaria do curso
             // Encontra o elemento que contém o texto específico para consultar carga horaria
             var element1 = driver.FindElement(By.XPath($"//*[contains(text(), 'Para conclusão')]"));
+
+            // Sobe na árvore do DOM até encontrar o <div> pai, div acima do elemento desejado
             IWebElement parentDiv = element1;
             while (parentDiv != null && parentDiv.TagName.ToLower() != "div")
             {
@@ -117,8 +116,8 @@ namespace CONSULTA_ALURA
 
             // Captura descrição do curso
             // Dependedo, a estrutura aonde se encontra a descrição muda
-            var elementoDescricao = Utilities.FindElemests(driver, By.XPath("/html/body/main/section[1]/article/div/div/div[2]/div/h2"));
-            var elementoDescricao1 = Utilities.FindElemests(driver, By.XPath("/html/body/section[1]/div/div[1]/p[2]"));
+            var elementoDescricao = Utilities.FindElemests(driver, By.XPath(Utilities.GetParameters("CaminhoElementoDescricaoCurso")));
+            var elementoDescricao1 = Utilities.FindElemests(driver, By.XPath(Utilities.GetParameters("CaminhoElementoDescricaoCurso1")));
             if (elementoDescricao != null)
             {
                 dados.descricao = elementoDescricao.Text;
@@ -135,9 +134,9 @@ namespace CONSULTA_ALURA
 
             // Verificar se existe a lista de instrutores
             string todosInstrutores = string.Empty;
-            var listaInstrutores1 = Utilities.FindElemests(driver, By.XPath("/html/body/main/section[2]/section[3]/div/ul"));
-            var listaInstrutores2 = Utilities.FindElemests(driver, By.XPath("/html/body/main/section[2]/section[4]/div/ul"));
-            
+            var listaInstrutores1 = Utilities.FindElemests(driver, By.XPath(Utilities.GetParameters("CaminhoElementoListaInstrutores")));
+            var listaInstrutores2 = Utilities.FindElemests(driver, By.XPath(Utilities.GetParameters("CaminhoElementoListaInstrutores1")));
+
             if (listaInstrutores1 != null || listaInstrutores2 != null)
             {
                 IWebElement listaInstrutores ;
@@ -168,7 +167,7 @@ namespace CONSULTA_ALURA
             }
 
             // Quando é somente um instrutor é em outro html
-            var instrutor1 = Utilities.FindElemests(driver, By.XPath("/html/body/section[2]/div[1]/section/div/div/div/h3"));
+            var instrutor1 = Utilities.FindElemests(driver, By.XPath(Utilities.GetParameters("CaminhoElementoListaInstrutor")));
             if (instrutor1 != null)
             {
                 todosInstrutores = instrutor1.Text;
