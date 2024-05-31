@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Configuration;
-using System.Diagnostics.CodeAnalysis;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using CredentialManagement;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -21,8 +19,9 @@ namespace CONSULTA_ALURA
         {
             try
             {
-                var options = new ChromeOptions(); //configurações do chrome
+                var options = new ChromeOptions(); // configurações do chrome
                 options.AddArgument("--start-maximized"); // abrir chrome maximixado
+                options.AddArgument("log-level=3"); // desabilitar logs
 
                 return new ChromeDriver(options); // retona instancia chrome 
             }
@@ -33,13 +32,16 @@ namespace CONSULTA_ALURA
             }
         }
 
-        //Metodo parar enviar valores para os campos
+        //Metodo parar enviar valores para os campos input
         public static void EnviaValor(IWebDriver driver, By by, string valor)
         {
+            // Metodo para esperar elemento
             WaitForElement(driver, by);
 
+            // Consulta informações sobre o campo
             var input = FindElemests(driver, by);
 
+            // Validação para verificar se o input ja esta acessivel, caso não espera por determinado tempo
             if (input.Enabled == false || input.Displayed == false)
             {
                 LOG(1, "Elemento não Interagivel");
@@ -55,19 +57,10 @@ namespace CONSULTA_ALURA
         //Metodo para clicar em elementos
         public static void EnviaClick(IWebDriver driver, By by)
         {
+            // Metodo para esperar elemento
             WaitForElement(driver, by);
 
             driver.FindElement(by).Click();
-        }
-
-        //Metodo para capturar textos
-        public static string Capturatextos(IWebDriver driver, By by)
-        {
-            WaitForElement(driver, by);
-
-            string texto = driver.FindElement(by).Text;
-
-            return texto;
         }
 
         //Encontra elementos na pagina
@@ -77,7 +70,7 @@ namespace CONSULTA_ALURA
             return (elements.Count >= 1) ? elements.First() : null;
         }
 
-        //Metodo para esperar elemento ficar acessivel para interações
+        // Metodo para esperar elemento ficar acessivel para interações
         public static void WaitForElement(IWebDriver driver, By by)
         {
             //esperar elemento ficar acessivel
@@ -85,15 +78,15 @@ namespace CONSULTA_ALURA
             wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(by));
         }
 
-        // metodo pára validação apos acessar site desejado + verificação do campo de busca
+        // Metodo pára validação apos acessar site desejado + verificação do campo de busca
         public static int VerificaAcesso(IWebDriver driver, string objHtml, WebDriverWait wait)
         {
             try
             {
-                //espera o elemento ficar acessivel para manipular
+                // Espera o elemento ficar acessivel para manipular
                 wait.Until(ExpectedConditions.PresenceOfAllElementsLocatedBy(By.Id(objHtml)));
 
-                //captura dados do campo
+                // Captura dados do campo
                 var input = driver.FindElement(By.Id(objHtml));
                 if (input != null)
                 {

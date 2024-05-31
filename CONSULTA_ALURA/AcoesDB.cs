@@ -14,25 +14,18 @@
 
 using MySql.Data.MySqlClient;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace CONSULTA_ALURA
 {
     public class AcoesDB
     {
-        private static string msg;
-        private static MySqlConnection cn = new MySqlConnection("Server=localhost;DataBase=ALURA;User=root;pwd=pacoca10");
+        private static MySqlConnection cn = new MySqlConnection($"Server={Utilities.GetParameters("server")};DataBase={Utilities.GetParameters("dataBase")};User={Utilities.GetParameters("user")};pwd={Utilities.GetParameters("pwd")}");
 
+        // Metodo para inserir os registros no banco, recebendo os dados da classe DadosCurso
         public static void DB_INSERE_DADOS(DadosCurso dados)
         {
             try
             {
-
-
                 MySqlCommand my = new MySqlCommand("INSERT INTO DADOS_CURSO (TITULO_CURSO, PROFESSOR_CURSO, CARGA_HORARIA_CURSO, DESCRICAO_CURSO) " +
                     "values (@nomeCurso, @nomeInstrutor, @cargaHoraria, @descricao)", MyConectarBD());
 
@@ -53,6 +46,7 @@ namespace CONSULTA_ALURA
             }
         }
 
+        // Metodo para conectar com o Mysql
         private static MySqlConnection MyConectarBD()
         {
 
@@ -60,13 +54,14 @@ namespace CONSULTA_ALURA
             {
                 cn.Open();
             }
-            catch (Exception erro)
+            catch (Exception ex)
             {
-                msg = "Ocorreu um erro ao se conectar" + erro.Message;
+                Utilities.LOG(1, $"Ocorreu um erro ao se conectar {ex}");
             }
             return cn;
         }
 
+        // Metodo para desconectar com o Mysql
         private static MySqlConnection MyDesconectarBD()
         {
 
@@ -75,9 +70,9 @@ namespace CONSULTA_ALURA
                 cn.Close();
             }
 
-            catch (Exception erro)
+            catch (Exception ex)
             {
-                msg = "Ocorreu um erro ao se conectar" + erro.Message;
+                Utilities.LOG(1, $"Ocorreu um erro ao se desconectar {ex}");
             }
             return cn;
         }

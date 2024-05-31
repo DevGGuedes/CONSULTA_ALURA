@@ -50,7 +50,8 @@ namespace Program
         {
             string nomeCurso = string.Empty;
 
-            while (string.IsNullOrEmpty(nomeCurso)) // validação para enquanto o valor recebido for branco
+            // Validação para enquanto o valor recebido for branco
+            while (string.IsNullOrEmpty(nomeCurso))
             {
                 Console.Write("\nInforme o nome do Curso desejado: ");
                 nomeCurso = Console.ReadLine();
@@ -61,12 +62,12 @@ namespace Program
             return nomeCurso;
         }
 
-        //Valida argumentos passados a este EXE
+        // Valida argumentos passados a este EXE
         private static string VALIDA_ARGUMENTOS_EXE(string[] args)
         {
             string returned_arg = "-1";
 
-            //Cenário onde nenhum argumento foi fornecido
+            // Cenário onde nenhum argumento foi fornecido
             if (args.Length == 0)
             {
                 string arg_msg_standard = Utilities.GetParameters("arg_msg_standard");
@@ -82,17 +83,17 @@ namespace Program
                     switch (args[i].ToLower())
                     {
 
-                        case "-h": //help
+                        case "-h": // help
                             string arg_msg_help = Utilities.GetParameters("arg_msg_help");
                             Console.WriteLine(arg_msg_help);
                             Environment.Exit(1);
                             break;
-                        case "-log": //gera arquivo de log
+                        case "-log": // gera arquivo de log
                             Console.WriteLine(">> LOG habilitado");
                             Utilities.FILE_LOG = true;
                             Utilities.LOG(0, "");
                             break;
-                        case "-ver": //exibe versão atual do código
+                        case "-ver": // exibe versão atual do código
                             Console.WriteLine(Utilities.GetParameters("ver"));
                             Environment.Exit(1);
                             break;
