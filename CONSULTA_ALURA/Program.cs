@@ -52,10 +52,21 @@ namespace CONSULTA_ALURA
 
             // Abre chrome
             var driver = Utilities.AbreChrome();
+            if (driver == null)
+            {
+                while (driver == null)
+                {
+                    driver = Utilities.AbreChrome();
+                }
+            }
             WebDriverWait wait = new WebDriverWait(driver, TimeSpan.FromSeconds(Convert.ToInt32(Utilities.GetParameters("Wait")))); // variavel para daley com 30 segundos
 
             // Abrir site da alura, capturando o link do app config
             driver.Navigate().GoToUrl(Utilities.GetParameters("urlSiteAlura"));
+            if (driver.Url != Utilities.GetParameters("urlSiteAlura"))
+            {
+                driver.Navigate().GoToUrl(Utilities.GetParameters("urlSiteAlura"));
+            }
 
             // Validação acesso ao site + validação campo busca
             ret = Utilities.VerificaAcesso(driver, Utilities.GetParameters("idCampoBuscaCurso"), wait);
